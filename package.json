@@ -1,0 +1,17 @@
+{
+  "name": "crypto-wallet-tracker",
+  "version": "1.0.0",
+  "description": "A Node.js script that tracks pending transactions for specific wallet addresses on Ethereum",
+  "main": "wallet-tracker.js",
+  "scripts": {
+    "start": "node wallet-tracker.js",
+    "dev": "node wallet-tracker.js"
+  },
+  "keywords": ["ethereum", "wallet", "tracker", "ethers", "websocket", "pending", "transactions"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ethers": "^6.8.0",
+    "dotenv": "^16.3.1"
+  }
+} 
