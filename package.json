@@ -5,6 +5,9 @@
   "main": "wallet-tracker.js",
   "scripts": {
     "start": "node wallet-tracker.js",
+    "enhanced": "node enhanced-wallet-tracker.js",
+    "test:notifications": "node test-notifications.js",
+    "test:meme-filter": "node test-meme-filter.js",
     "dev": "node wallet-tracker.js"
   },
   "keywords": ["ethereum", "wallet", "tracker", "ethers", "websocket", "pending", "transactions"],
@@ -12,6 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "ethers": "^6.8.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2",
+    "telegraf": "^4.15.6"
   }
 } 
