@@ -23,6 +23,7 @@ class WalletTracker {
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;
         this.reconnectDelay = 5000; // 5 seconds
+        this.healthCheckInterval = null;
     }
 
     async init() {
@@ -90,23 +91,32 @@ class WalletTracker {
                     this.checkAndPrintTransaction(tx);
                 }
             } catch (error) {
-                // Silently ignore errors for individual transactions
+                // Check if this is a connection error
+                if (error.code === 'NETWORK_ERROR' || 
+                    error.message.includes('connection') || 
+                    error.message.includes('websocket')) {
+                    console.error('❌ Connection error detected:', error.message);
+                    this.isConnected = false;
+                    this.handleReconnect();
+                    return;
+                }
+                // Silently ignore other errors for individual transactions
                 // as pending transactions can be dropped or replaced
             }
         });
 
-        // Handle connection errors
+        // Handle connection errors - ethers v6 approach
         this.provider.on('error', (error) => {
             console.error('❌ WebSocket error:', error.message);
-            this.handleReconnect();
-        });
-
-        // Handle connection close
-        this.provider.on('close', () => {
-            console.log('🔌 WebSocket connection closed');
             this.isConnected = false;
             this.handleReconnect();
         });
+
+        // Note: In ethers v6, 'close' event is not directly available on the provider
+        // Connection issues will be handled through the error event and transaction failures
+        
+        // Set up periodic connection health check
+        this.setupHealthCheck();
     }
 
     checkAndPrintTransaction(tx) {
@@ -144,7 +154,29 @@ class WalletTracker {
         console.log('================================\n');
     }
 
+    setupHealthCheck() {
+        // Check connection health every 30 seconds
+        this.healthCheckInterval = setInterval(async () => {
+            if (!this.isConnected) return;
+            
+            try {
+                // Try to get the latest block number as a health check
+                await this.provider.getBlockNumber();
+            } catch (error) {
+                console.error('❌ Health check failed:', error.message);
+                this.isConnected = false;
+                this.handleReconnect();
+            }
+        }, 30000);
+    }
+
     async handleReconnect() {
+        // Clear health check interval during reconnection
+        if (this.healthCheckInterval) {
+            clearInterval(this.healthCheckInterval);
+            this.healthCheckInterval = null;
+        }
+
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
             console.error('❌ Max reconnection attempts reached. Exiting...');
             process.exit(1);
@@ -166,6 +198,12 @@ class WalletTracker {
     }
 
     async destroy() {
+        // Clear health check interval
+        if (this.healthCheckInterval) {
+            clearInterval(this.healthCheckInterval);
+            this.healthCheckInterval = null;
+        }
+        
         if (this.provider) {
             await this.provider.destroy();
         }
