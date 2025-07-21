@@ -8,6 +8,8 @@
     "enhanced": "node enhanced-wallet-tracker.js",
     "test:notifications": "node test-notifications.js",
     "test:meme-filter": "node test-meme-filter.js",
+    "test:swap-executor": "node test-swap-executor.js",
+    "demo:swap": "node test-swap-executor.js demo",
     "dev": "node wallet-tracker.js"
   },
   "keywords": ["ethereum", "wallet", "tracker", "ethers", "websocket", "pending", "transactions"],
