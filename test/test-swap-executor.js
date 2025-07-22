@@ -27,7 +27,7 @@
  * - Parameter injection attack prevention
  */
 
-const { SwapExecutor, TOKEN_ADDRESSES } = require('./swap-executor');
+const { SwapExecutor, TOKEN_ADDRESSES } = require('../swap-executor');
 
 /**
  * Comprehensive test scenarios for swap executor
