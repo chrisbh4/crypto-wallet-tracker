@@ -10,7 +10,7 @@ const {
     getMemeTokenStats,
     addMemeTokenAddress,
     getMemeTokenAddresses 
-} = require('./meme-coin-filter');
+} = require('../meme-coin-filter');
 
 console.log('🧪 Testing Meme Coin Transaction Filter\n');
 

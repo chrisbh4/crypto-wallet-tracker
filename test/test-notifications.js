@@ -38,7 +38,7 @@
  * - Tests validate both successful and failed notification attempts
  */
 
-const { NotificationService } = require('./notification-service');
+const { NotificationService } = require('../notification-service');
 
 /**
  * Test the notification service with sample transaction data
